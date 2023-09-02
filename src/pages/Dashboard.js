@@ -2,8 +2,9 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { addDevice } from "../redux/action";
 import { connect } from "react-redux";
+import DeviceMonitor from "../components/DeviceMonitor";
 
-const Dashboard = ({deviceList}) => {
+const Dashboard = ({ deviceList }) => {
   console.log("dashboard is being rendered");
 
   // create matix for the UDL
@@ -52,6 +53,16 @@ const Dashboard = ({deviceList}) => {
           Dashboard
         </h1>
       </div>
+      {deviceList.map((device, index) => (
+        <div key={device.id}>
+          {/* {console.log("Showing Device", device.id)} */}
+          <DeviceMonitor
+            id={device.id}
+            thisDevice={deviceList[device.id - 1]}
+          />
+        </div>
+      ))}
+
       <button onClick={addNewDevice} className="add-device group HiOutlineCog">
         <AiOutlinePlus size="28" />
         <span className="sidebar-tooltip group-hover:scale-100">
@@ -71,3 +82,4 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+

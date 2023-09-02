@@ -1,0 +1,20 @@
+{
+    "SerialID": "1",
+    "DeviceName": "Zappi 1",
+    "Data": {
+        "V1": 230,
+        "V2": 31.8,
+        "V3": 210,
+        "V4": 1.8
+    },
+ 
+    "OtherThings": 223,
+    "UDL": {
+        "x": 10,
+        "y": 2,
+        "text": "sample text"
+    },
+    "Log":"22.442.12A.2",
+    "Terminal":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHH"
+
+}
