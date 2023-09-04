@@ -72,3 +72,42 @@
   background-color: transparent;
   color: white;
 }
+
+.UDL {
+  white-space: pre-line;
+  color: white;
+  height: 340px;
+  width: 600px;
+  overflow-y: scroll;
+  overflow-x: auto;
+
+}
+
+.UDL::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.UDL::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 100vw;
+}
+.UDL::-webkit-scrollbar-thumb {
+  background: white;
+  border-radius: 100vw;
+}
+
+
+
+#check-box-1:checked ~ .check-1{
+  @apply text-opacity-100;
+  animation: check-animation .5s 1;
+}
+
+@keyframes check-animation {
+  0%, 100%{
+    @apply transform scale-100;
+  }
+  50%{
+    @apply transform scale-150
+  }
+}

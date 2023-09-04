@@ -2,19 +2,23 @@ import { Switch } from "antd";
 import { useEffect, useState, memo } from "react";
 import { useDispatch } from "react-redux";
 import {
+  toggleLog,
+  toggleTerminal,
   updateConnectionType,
   updateDeviceName,
   updateIPAddress,
   updateLog,
   updatePort,
   updateSerial,
+  updateTerminal,
 } from "../redux/action";
+import ToggleCheckbox from "./ToggleCheckbox";
 import Log from "./widgets/Log";
 import Terminal from "./widgets/Terminal";
 
 //const DeviceMonitor = ({ id, thisDevice }) => {
-const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
-  console.log("showing device", id);
+const DeviceMonitor = ({ id, thisDevice }) => {
+  console.log("showing device", thisDevice);
 
   const dispatch = useDispatch();
 
@@ -30,6 +34,15 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
     console.log("toggle", toggle);
   };
 
+  // handlers for widget toggles
+  const handleTerminalToggle = (isChecked) => {
+    dispatch(toggleTerminal(id, isChecked));
+  };
+
+  const handleLogToggle = (isChecked) => {
+    dispatch(toggleLog(id, isChecked));
+  };
+
   const udpReceivedHandler = (UDP) => {
     UDP.msg = JSON.parse(String.fromCharCode(...UDP.msg));
     console.log("packet received", UDP.msg);
@@ -41,6 +54,11 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
       dispatch(updatePort(id, UDP.port));
       dispatch(updateDeviceName(id, UDP.msg.DeviceName));
 
+      // update terminal
+      let newTerminalOutput =
+        thisDevice.terminal + timeStr + " $ " + UDP.msg.Terminal + "\n";
+      dispatch(updateTerminal(id, newTerminalOutput));
+
       // update log
       let newLogOutput = thisDevice.log + timeStr + " >> " + UDP.msg.Log + "\n";
       dispatch(updateLog(id, newLogOutput));
@@ -51,12 +69,12 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
     }
   };
   useEffect(() => {
-    ipcRenderer.once("UDP:RECIEVED", udpReceivedHandler);
+    ipcRenderer.once(`UDP:RECIEVED${thisDevice.serial}`, udpReceivedHandler);
 
     return () => {
       ipcRenderer.removeListener("UDP:RECIEVED", udpReceivedHandler);
     };
-  }, [udpReceivedHandler]); // Empty dependency array means this effect runs only on component mount and unmount.
+  }); // Empty dependency array means this effect runs only on component mount and unmount.
 
   return (
     <>
@@ -86,13 +104,28 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
           // Serial
           <>Serial </>
         )}
+        <br /> <br />
+        <div className=" text-white">
+          Terminal:&ensp;
+          <ToggleCheckbox
+            onToggle={handleTerminalToggle}
+            defaultToggle={thisDevice.showTerminal}
+          />
+          &ensp;Log:&ensp;
+          <ToggleCheckbox
+            onToggle={handleLogToggle}
+            defaultToggle={thisDevice.showLog}
+          />
+        </div>
       </div>
       <div className="flex flex-wrap">
-        <Terminal id={id} thisDevice={thisDevice} />
-        <Log id={id} thisDevice={thisDevice} />
+        {thisDevice.showTerminal && (
+          <Terminal id={id} thisDevice={thisDevice} />
+        )}
+        {thisDevice.showLog && <Log id={id} thisDevice={thisDevice} />}
       </div>
     </>
   );
-});
+};
 
 export default DeviceMonitor;

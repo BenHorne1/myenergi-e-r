@@ -50,10 +50,24 @@ export const removeAllDevice = () => ({
   type: "REMOVE_ALL_DEVICES",
 });
 
+export const toggleTerminal = (terminalToggleId, newToggleState) => {
+  return {
+    type: "TOGGLE_TERMINAL",
+    payload: { terminalToggleId, newToggleState },
+  };
+};
+
 export const updateTerminal = (terminalID, newTerminalValue) => {
   return {
     type: "UPDATE_TERMINAL",
     payload: { terminalID, newTerminalValue },
+  };
+};
+
+export const toggleLog = (LogToggleId, newLogToggleState) => {
+  return {
+    type: "TOGGLE_LOG",
+    payload: { LogToggleId, newLogToggleState },
   };
 };
 

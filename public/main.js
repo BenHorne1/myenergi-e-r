@@ -65,8 +65,10 @@ try {
 } catch {}
 
 socket.on("message", (msg, rinfo) => {
-  console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-  mainWindow.webContents.send("UDP:RECIEVED", {
+  //console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+  let JSONRecieved = JSON.parse(msg)
+  console.log(JSONRecieved.SerialID)
+  mainWindow.webContents.send(`UDP:RECIEVED${JSONRecieved.SerialID}`, {
     msg: msg,
     IPAddress: rinfo.address,
     port: rinfo.port,

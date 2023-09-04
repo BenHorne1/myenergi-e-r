@@ -98,6 +98,19 @@ const rootReducer = (state = initialState, action) => {
         deviceList: [],
       };
 
+    case "TOGGLE_TERMINAL":
+      const { terminalToggleId, newToggleState } = action.payload;
+      const updatedTerminalToggle = state.deviceList.map((device) => {
+        if (device.id === terminalToggleId) {
+          return { ...device, showTerminal: newToggleState };
+        }
+        return device;
+      });
+      return {
+        ...state,
+        deviceList: updatedTerminalToggle,
+      };
+
     case "UPDATE_TERMINAL":
       const { terminalID, newTerminalValue } = action.payload;
       const updatedTerminalValue = state.deviceList.map((device) => {
@@ -109,6 +122,19 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         deviceList: updatedTerminalValue,
+      };
+
+    case "TOGGLE_LOG":
+      const { LogToggleId, newLogToggleState } = action.payload;
+      const updatedLogToggle = state.deviceList.map((device) => {
+        if (device.id === LogToggleId) {
+          return { ...device, showLog: newLogToggleState };
+        }
+        return device;
+      });
+      return {
+        ...state,
+        deviceList: updatedLogToggle,
       };
 
     case "UPDATE_LOG":
