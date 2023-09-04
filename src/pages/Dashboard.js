@@ -1,10 +1,15 @@
 import { AiOutlinePlus } from "react-icons/ai";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addDevice } from "../redux/action";
 import { connect } from "react-redux";
 import DeviceMonitor from "../components/DeviceMonitor";
+import { memo } from "react";
 
-const Dashboard = ({ deviceList }) => {
+//const Dashboard = ({ deviceList }) => {
+const Dashboard = memo(function Dashboard() {
+  const deviceList = useSelector((state) => state.deviceList);
+  const dispatch = useDispatch();
+
   console.log("dashboard is being rendered");
 
   // create matix for the UDL
@@ -39,8 +44,6 @@ const Dashboard = ({ deviceList }) => {
     yy: yy,
   };
 
-  const dispatch = useDispatch();
-
   const addNewDevice = () => {
     console.log("adding a new device");
     dispatch(addDevice([...deviceList, newDevice]));
@@ -71,15 +74,16 @@ const Dashboard = ({ deviceList }) => {
       </button>
     </div>
   );
-};
-
-const mapStateToProps = (state) => ({
-  deviceList: state.deviceList,
 });
 
-const mapDispatchToProps = {
-  addDevice,
-};
+// const mapStateToProps = (state) => ({
+//   deviceList: state.deviceList,
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+// const mapDispatchToProps = {
+//   addDevice,
+// };
 
+// export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+
+export default Dashboard;

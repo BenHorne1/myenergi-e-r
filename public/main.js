@@ -72,3 +72,17 @@ socket.on("message", (msg, rinfo) => {
     port: rinfo.port,
   });
 });
+
+// udp send
+ipcMain.on("UDP:send", (e, data) => {
+  console.log("Sending UDP", data.msgToSend.length);
+  try {
+    socket.send(
+      data.msgToSend,
+      0,
+      data.msgToSend.length,
+      data.port,
+      data.IPAddress
+    );
+  } catch {}
+});

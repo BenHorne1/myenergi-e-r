@@ -40,3 +40,35 @@
   position: absolute;
   z-index: 0 !important;
 }
+
+.terminal {
+  white-space: pre-line;
+  color: white;
+  height: 340px;
+  width: 600px;
+  overflow-y: scroll;
+  overflow-x: auto;
+
+}
+
+.terminal::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.terminal::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 100vw;
+}
+.terminal::-webkit-scrollbar-thumb {
+  background: white;
+  border-radius: 100vw;
+}
+
+.terminalInput {
+  border: none;
+  outline: none;
+  margin: none;
+  padding: none;
+  background-color: transparent;
+  color: white;
+}

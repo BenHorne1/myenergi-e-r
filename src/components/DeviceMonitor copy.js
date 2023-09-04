@@ -10,10 +10,9 @@ import {
   updateSerial,
 } from "../redux/action";
 import Log from "./widgets/Log";
-import Terminal from "./widgets/Terminal";
 
 //const DeviceMonitor = ({ id, thisDevice }) => {
-const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
+  const DeviceMonitor = memo(function DeviceMonitor({id, thisDevice}) {
   console.log("showing device", id);
 
   const dispatch = useDispatch();
@@ -51,7 +50,7 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
     }
   };
   useEffect(() => {
-    ipcRenderer.once("UDP:RECIEVED", udpReceivedHandler);
+    ipcRenderer.on("UDP:RECIEVED", udpReceivedHandler);
 
     return () => {
       ipcRenderer.removeListener("UDP:RECIEVED", udpReceivedHandler);
@@ -87,12 +86,9 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
           <>Serial </>
         )}
       </div>
-      <div className="flex flex-wrap">
-        <Terminal id={id} thisDevice={thisDevice} />
-        <Log id={id} thisDevice={thisDevice} />
-      </div>
+      <Log id={id} thisDevice={thisDevice} />
     </>
   );
-});
+  });
 
 export default DeviceMonitor;

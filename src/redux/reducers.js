@@ -75,6 +75,55 @@ const rootReducer = (state = initialState, action) => {
         deviceList: updatedDeviceListName,
       };
 
+    case "REMOVE_DEVICE":
+      const removeID = action.payload;
+      const updatedDevices = state.deviceList.filter(
+        (device) => device.id !== removeID
+      );
+
+      // renumber the IDs of the subsequent items
+      const renumberedDevices = updatedDevices.map((device, index) => ({
+        ...device,
+        id: index + 1,
+      }));
+
+      return {
+        ...state,
+        deviceList: renumberedDevices,
+      };
+
+    case "REMOVE_ALL_DEVICES":
+      return {
+        ...state,
+        deviceList: [],
+      };
+
+    case "UPDATE_TERMINAL":
+      const { terminalID, newTerminalValue } = action.payload;
+      const updatedTerminalValue = state.deviceList.map((device) => {
+        if (device.id === terminalID) {
+          return { ...device, terminal: newTerminalValue };
+        }
+        return device;
+      });
+      return {
+        ...state,
+        deviceList: updatedTerminalValue,
+      };
+
+    case "UPDATE_LOG":
+      const { LogId, newLogState } = action.payload;
+      const updatedLog = state.deviceList.map((device) => {
+        if (device.id === LogId) {
+          return { ...device, log: newLogState };
+        }
+        return device;
+      });
+      return {
+        ...state,
+        deviceList: updatedLog,
+      };
+
     default:
       return state;
   }

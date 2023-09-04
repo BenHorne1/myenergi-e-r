@@ -40,3 +40,26 @@ export const updateDeviceName = (deviceIdForName, newName) => {
     payload: { deviceIdForName, newName },
   };
 };
+
+export const removeDevice = (removeID) => ({
+  type: "REMOVE_DEVICE",
+  payload: removeID,
+});
+
+export const removeAllDevice = () => ({
+  type: "REMOVE_ALL_DEVICES",
+});
+
+export const updateTerminal = (terminalID, newTerminalValue) => {
+  return {
+    type: "UPDATE_TERMINAL",
+    payload: { terminalID, newTerminalValue },
+  };
+};
+
+export const updateLog = (LogId, newLogState) => {
+  return {
+    type: "UPDATE_LOG",
+    payload: { LogId, newLogState },
+  };
+};

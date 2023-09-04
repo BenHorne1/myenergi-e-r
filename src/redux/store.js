@@ -5,8 +5,8 @@ import rootReducer from "./reducers";
 
 const loggerMiddleware = createLogger();
 
-const store = createStore(rootReducer, applyMiddleware(loggerMiddleware));
+// const store = createStore(rootReducer, applyMiddleware(loggerMiddleware));
 
-//const store = createStore(rootReducer);
+const store = createStore(rootReducer);
 
 export default store;
