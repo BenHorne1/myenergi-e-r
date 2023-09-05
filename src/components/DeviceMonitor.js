@@ -2,10 +2,13 @@ import { Switch } from "antd";
 import { useEffect, useState, memo } from "react";
 import { useDispatch } from "react-redux";
 import {
+  toggleGraph,
   toggleLog,
   toggleTerminal,
+  toggleUDL,
   updateConnectionType,
   updateDeviceName,
+  updateGraph,
   updateIPAddress,
   updateLog,
   updatePort,
@@ -15,9 +18,11 @@ import {
 import ToggleCheckbox from "./ToggleCheckbox";
 import Log from "./widgets/Log";
 import Terminal from "./widgets/Terminal";
+import UDL from "./widgets/UDL";
+import Graph from "./widgets/Graph";
 
 //const DeviceMonitor = ({ id, thisDevice }) => {
-const DeviceMonitor = ({ id, thisDevice }) => {
+const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice}) {
   console.log("showing device", thisDevice);
 
   const dispatch = useDispatch();
@@ -43,6 +48,14 @@ const DeviceMonitor = ({ id, thisDevice }) => {
     dispatch(toggleLog(id, isChecked));
   };
 
+  const handleUDLToggle = (isChecked) => {
+    dispatch(toggleUDL(id, isChecked));
+  };
+
+  const handleGraphToggle = (isChecked) => {
+    dispatch(toggleGraph(id, isChecked));
+  };
+
   const udpReceivedHandler = (UDP) => {
     UDP.msg = JSON.parse(String.fromCharCode(...UDP.msg));
     console.log("packet received", UDP.msg);
@@ -63,6 +76,21 @@ const DeviceMonitor = ({ id, thisDevice }) => {
       let newLogOutput = thisDevice.log + timeStr + " >> " + UDP.msg.Log + "\n";
       dispatch(updateLog(id, newLogOutput));
 
+      // update log csv
+      console.log("sending to csv")
+      ipcRenderer.postMessage("csv:logData", {
+        logData: UDP.msg.Log,
+        id: id,
+        serial: UDP.msg.SerialID,
+      });
+
+      // update UDL
+
+      // update Graph
+      console.log("!!!!!!!!!!", UDP.msg.Data)
+      dispatch(updateGraph(id, UDP.msg.Data))
+
+
       // return () => (thisDevice = null), (id = null);
     } else {
       console.log("non-matched serial for ", id);
@@ -74,7 +102,7 @@ const DeviceMonitor = ({ id, thisDevice }) => {
     return () => {
       ipcRenderer.removeListener("UDP:RECIEVED", udpReceivedHandler);
     };
-  }); // Empty dependency array means this effect runs only on component mount and unmount.
+  }, ); // Empty dependency array means this effect runs only on component mount and unmount.
 
   return (
     <>
@@ -116,6 +144,16 @@ const DeviceMonitor = ({ id, thisDevice }) => {
             onToggle={handleLogToggle}
             defaultToggle={thisDevice.showLog}
           />
+          &ensp;Custom Display:&ensp;
+          <ToggleCheckbox
+            onToggle={handleUDLToggle}
+            defaultToggle={thisDevice.showUDL}
+          />
+          &ensp;Graph:&ensp;
+          <ToggleCheckbox
+            onToggle={handleGraphToggle}
+            defaultToggle={thisDevice.showGraph}
+          />
         </div>
       </div>
       <div className="flex flex-wrap">
@@ -123,9 +161,11 @@ const DeviceMonitor = ({ id, thisDevice }) => {
           <Terminal id={id} thisDevice={thisDevice} />
         )}
         {thisDevice.showLog && <Log id={id} thisDevice={thisDevice} />}
+        {thisDevice.showUDL && <UDL id={id} thisDevice={thisDevice} />}
+        {thisDevice.showGraph && <Graph id={id} thisDevice={thisDevice} />}
       </div>
     </>
   );
-};
+});
 
 export default DeviceMonitor;

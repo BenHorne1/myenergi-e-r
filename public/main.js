@@ -1,10 +1,23 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
+const installExtension = require('electron-devtools-installer');
 const fs = require("fs");
 const path = require("path");
 const dgram = require("dgram");
 const socket = dgram.createSocket("udp4");
 
 let mainWindow;
+
+// get date of program openning
+function formatDateToYYYYMMDD(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}${month}${day}`;
+}
+
+const currentDate = new Date();
+const formattedDate = formatDateToYYYYMMDD(currentDate);
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -26,6 +39,12 @@ function createWindow() {
 
   //load the index.html from a url
   mainWindow.loadURL("http://localhost:3000");
+
+  // Install Redux DevTools Extension
+  installExtension
+    .default(installExtension.REDUX_DEVTOOLS)
+    .then((name) => console.log(`Added Extension: ${name}`))
+    .catch((err) => console.log('An error occurred: ', err));
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
@@ -66,9 +85,9 @@ try {
 
 socket.on("message", (msg, rinfo) => {
   //console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-  let JSONRecieved = JSON.parse(msg)
-  console.log(JSONRecieved.SerialID)
-  mainWindow.webContents.send(`UDP:RECIEVED${JSONRecieved.SerialID}`, {
+  let JSONRecieved = JSON.parse(msg);
+  console.log(JSONRecieved.SerialID);
+  mainWindow.webContents.postMessage(`UDP:RECIEVED${JSONRecieved.SerialID}`, {
     msg: msg,
     IPAddress: rinfo.address,
     port: rinfo.port,
@@ -87,4 +106,35 @@ ipcMain.on("UDP:send", (e, data) => {
       data.IPAddress
     );
   } catch {}
+});
+
+// Append to CSV
+function appendToCSV(filePath, csvLine) {
+ // console.log("graphFileName", graphFileName);
+  console.log("file path", filePath);
+  fs.appendFile(filePath, csvLine, (err) => {
+    if (err) {
+      console.error("Error writing to CSV file:", err);
+    } else {
+      console.log("Data appended to CSV file:", csvLine);
+    }
+  });
+}
+
+// update csv
+
+ipcMain.on("csv:logData", (e, data) => {
+  console.log("Log data ", data);
+
+  const time = new Date();
+  const timeStr = time.toLocaleTimeString();
+
+  let logFileName = formattedDate + data.serial + "log.csv";
+  let saveLocation = "C:\\Users\\benho\\OneDrive\\Documents\\myenergi\\CSV";
+
+  console.log(logFileName);
+  appendToCSV(
+    saveLocation + "\\" + logFileName,
+    `${timeStr},${data.logData}\n`
+  );
 });

@@ -77,3 +77,28 @@ export const updateLog = (LogId, newLogState) => {
     payload: { LogId, newLogState },
   };
 };
+
+export const toggleUDL = (UDLId, newUDLState) => {
+  return {
+    type: "TOGGLE_UDL",
+    payload: { UDLId, newUDLState },
+  };
+};
+
+export const toggleGraph = (graphID, newGraphState) => {
+  return {
+    type: "TOGGLE_GRAPH",
+    payload: { graphID, newGraphState },
+  };
+};
+
+export const updateGraph = (
+  graphUpdateID,
+  GraphData,
+) => ({
+  type: "UPDATE_GRAPH",
+  payload: {
+    graphUpdateID,
+    GraphData,
+  },
+});
