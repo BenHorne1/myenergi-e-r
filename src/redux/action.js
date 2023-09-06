@@ -92,13 +92,14 @@ export const toggleGraph = (graphID, newGraphState) => {
   };
 };
 
-export const updateGraph = (
-  graphUpdateID,
-  GraphData,
-) => ({
+export const updateGraphRange = (graphRangeID, newGraphRange) => {
+  return {
+    type: "CHANGE_GRAPH_RANGE",
+    payload: { graphRangeID, newGraphRange },
+  };
+};
+
+export const updateGraph = (graphUpdateID, GraphData) => ({
   type: "UPDATE_GRAPH",
-  payload: {
-    graphUpdateID,
-    GraphData,
-  },
+  payload: { graphUpdateID, GraphData },
 });

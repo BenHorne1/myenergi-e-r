@@ -176,6 +176,19 @@ const rootReducer = (state = initialState, action) => {
         deviceList: updatedGraphToggle,
       };
 
+    case "CHANGE_GRAPH_RANGE": 
+    const {graphRangeID, newGraphRange} = action.payload;
+    const updatedGraphRange = state.deviceList.map((device) => {
+        if (device.id === graphRangeID) { 
+          return { ...device, graphRange: newGraphRange}
+        }
+        return device;
+    });
+    return {
+      ...state,
+      deviceList: updatedGraphRange
+    }
+
     case "UPDATE_GRAPH":
       const { graphUpdateID, GraphData } = action.payload;
       const updatedGraph = state.deviceList.map((device) => {

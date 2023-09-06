@@ -21,6 +21,8 @@ const Dashboard = memo(function Dashboard() {
     displayMatrix[i] = new Array(xx).fill("&nbsp;");
   }
 
+  const arrayOfZeros = new Array(120).fill(0)
+
   // template for a new device
   const newDevice = {
     id: deviceList.length + 1,
@@ -36,10 +38,11 @@ const Dashboard = memo(function Dashboard() {
     showLog: false,
     showUDL: false,
     showGraph: false,
-    v1: [],
-    v2: [],
-    v3: [],
-    v4: [],
+    v1: arrayOfZeros,
+    v2: arrayOfZeros,
+    v3: arrayOfZeros,
+    v4: arrayOfZeros,
+    graphRange: 30,
     xx: xx,
     yy: yy,
   };

@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
-const installExtension = require('electron-devtools-installer');
+const installExtension = require("electron-devtools-installer");
 const fs = require("fs");
 const path = require("path");
 const dgram = require("dgram");
@@ -44,7 +44,7 @@ function createWindow() {
   installExtension
     .default(installExtension.REDUX_DEVTOOLS)
     .then((name) => console.log(`Added Extension: ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
+    .catch((err) => console.log("An error occurred: ", err));
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
@@ -110,7 +110,7 @@ ipcMain.on("UDP:send", (e, data) => {
 
 // Append to CSV
 function appendToCSV(filePath, csvLine) {
- // console.log("graphFileName", graphFileName);
+  // console.log("graphFileName", graphFileName);
   console.log("file path", filePath);
   fs.appendFile(filePath, csvLine, (err) => {
     if (err) {
@@ -136,5 +136,21 @@ ipcMain.on("csv:logData", (e, data) => {
   appendToCSV(
     saveLocation + "\\" + logFileName,
     `${timeStr},${data.logData}\n`
+  );
+});
+
+ipcMain.on("csv:graphData", (e, data) => {
+  console.log("Graph data ", data);
+
+  const time = new Date();
+  const timeStr = time.toLocaleTimeString();
+
+  let logFileName = formattedDate + data.serial + "GraphData.csv";
+  let saveLocation = "C:\\Users\\benho\\OneDrive\\Documents\\myenergi\\CSV";
+
+  console.log(logFileName);
+  appendToCSV(
+    saveLocation + "\\" + logFileName,
+    `${timeStr},${data.graphData.v1},${data.graphData.v2},${data.graphData.v3},${data.graphData.v4},\n`
   );
 });

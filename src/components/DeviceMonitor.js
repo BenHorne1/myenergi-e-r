@@ -19,7 +19,7 @@ import ToggleCheckbox from "./ToggleCheckbox";
 import Log from "./widgets/Log";
 import Terminal from "./widgets/Terminal";
 import UDL from "./widgets/UDL";
-import Graph from "./widgets/Graph";
+import GraphWindow from "./widgets/Graph/GraphWindow";
 
 //const DeviceMonitor = ({ id, thisDevice }) => {
 const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice}) {
@@ -89,6 +89,13 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice}) {
       // update Graph
       console.log("!!!!!!!!!!", UDP.msg.Data)
       dispatch(updateGraph(id, UDP.msg.Data))
+
+      // update graph CSV
+      ipcRenderer.postMessage("csv:graphData", {
+        graphData : UDP.msg.Data,
+        id: id,
+        serial: UDP.msg.SerialID,
+      })
 
 
       // return () => (thisDevice = null), (id = null);
@@ -162,7 +169,7 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice}) {
         )}
         {thisDevice.showLog && <Log id={id} thisDevice={thisDevice} />}
         {thisDevice.showUDL && <UDL id={id} thisDevice={thisDevice} />}
-        {thisDevice.showGraph && <Graph id={id} thisDevice={thisDevice} />}
+        {thisDevice.showGraph && <GraphWindow id={id} thisDevice={thisDevice} />}
       </div>
     </>
   );
