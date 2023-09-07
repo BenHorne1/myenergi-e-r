@@ -16,10 +16,7 @@ const Dashboard = memo(function Dashboard() {
   const xx = 110;
   const yy = 15;
 
-  var displayMatrix = new Array(yy);
-  for (var i = 0; i < displayMatrix.length; i++) {
-    displayMatrix[i] = new Array(xx).fill("&nbsp;");
-  }
+  var displayMatrix = ["1:", "2:", "3:", "4:", "5:", "6:", "7:", "8:", "9:" , "10:"]
 
   const arrayOfZeros = new Array(120).fill(0)
 

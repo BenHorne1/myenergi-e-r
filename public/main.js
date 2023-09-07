@@ -154,3 +154,29 @@ ipcMain.on("csv:graphData", (e, data) => {
     `${timeStr},${data.graphData.v1},${data.graphData.v2},${data.graphData.v3},${data.graphData.v4},\n`
   );
 });
+
+// UDL Buttons
+
+ipcMain.on("minClicked", (e, Data) => {
+  console.log(Data.IPAddress);
+  console.log(Data.port);
+  socket.send("minClicked", 0, 10, Data.port, Data.IPAddress);
+});
+
+ipcMain.on("plusClicked", (e, Data) => {
+  console.log(Data.IPAddress);
+  console.log(Data.port);
+  socket.send("plusClicked", 0, 11, Data.port, Data.IPAddress);
+});
+
+ipcMain.on("leftClicked", (e, Data) => {
+  console.log(Data.IPAddress);
+  console.log(Data.port);
+  socket.send("leftClicked", 0, 11, Data.port, Data.IPAddress);
+});
+
+ipcMain.on("rightClicked", (e, Data) => {
+  console.log(Data.IPAddress);
+  console.log(Data.port);
+  socket.send("rightClicked", 0, 12, Data.port, Data.IPAddress);
+});

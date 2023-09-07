@@ -21,8 +21,10 @@ import Terminal from "./widgets/Terminal";
 import UDL from "./widgets/UDL";
 import GraphWindow from "./widgets/Graph/GraphWindow";
 
+let disElem;
+
 //const DeviceMonitor = ({ id, thisDevice }) => {
-const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice}) {
+const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
   console.log("showing device", thisDevice);
 
   const dispatch = useDispatch();
@@ -77,7 +79,7 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice}) {
       dispatch(updateLog(id, newLogOutput));
 
       // update log csv
-      console.log("sending to csv")
+      console.log("sending to csv");
       ipcRenderer.postMessage("csv:logData", {
         logData: UDP.msg.Log,
         id: id,
@@ -86,17 +88,28 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice}) {
 
       // update UDL
 
+      disElem = document.querySelector(`#UDL${id}`);
+
+      let newUDL = "";
+
+      for (let i = 0; i < thisDevice.UDL.length; i++) {
+        if (i + 1 === UDP.msg.UDL.y) {
+          thisDevice.UDL[i] = i + 1 + ": " + UDP.msg.UDL.text;
+        }
+        newUDL += thisDevice.UDL[i] + `\n`;
+        console.log(newUDL);
+      }
+      disElem.innerHTML = newUDL;
+
       // update Graph
-      console.log("!!!!!!!!!!", UDP.msg.Data)
-      dispatch(updateGraph(id, UDP.msg.Data))
+      dispatch(updateGraph(id, UDP.msg.Data));
 
       // update graph CSV
       ipcRenderer.postMessage("csv:graphData", {
-        graphData : UDP.msg.Data,
+        graphData: UDP.msg.Data,
         id: id,
         serial: UDP.msg.SerialID,
-      })
-
+      });
 
       // return () => (thisDevice = null), (id = null);
     } else {
@@ -109,7 +122,7 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice}) {
     return () => {
       ipcRenderer.removeListener("UDP:RECIEVED", udpReceivedHandler);
     };
-  }, ); // Empty dependency array means this effect runs only on component mount and unmount.
+  }); // Empty dependency array means this effect runs only on component mount and unmount.
 
   return (
     <>
@@ -169,7 +182,9 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice}) {
         )}
         {thisDevice.showLog && <Log id={id} thisDevice={thisDevice} />}
         {thisDevice.showUDL && <UDL id={id} thisDevice={thisDevice} />}
-        {thisDevice.showGraph && <GraphWindow id={id} thisDevice={thisDevice} />}
+        {thisDevice.showGraph && (
+          <GraphWindow id={id} thisDevice={thisDevice} />
+        )}
       </div>
     </>
   );
