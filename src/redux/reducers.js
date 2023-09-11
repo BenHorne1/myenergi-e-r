@@ -1,4 +1,6 @@
 const initialState = {
+  textEditorValue: "Send JSON or other text files from here",
+  textEditorDeviceSelected: { id: 0, name: "Select Device", serial: "" },
   deviceList: [],
 };
 
@@ -176,18 +178,18 @@ const rootReducer = (state = initialState, action) => {
         deviceList: updatedGraphToggle,
       };
 
-    case "CHANGE_GRAPH_RANGE": 
-    const {graphRangeID, newGraphRange} = action.payload;
-    const updatedGraphRange = state.deviceList.map((device) => {
-        if (device.id === graphRangeID) { 
-          return { ...device, graphRange: newGraphRange}
+    case "CHANGE_GRAPH_RANGE":
+      const { graphRangeID, newGraphRange } = action.payload;
+      const updatedGraphRange = state.deviceList.map((device) => {
+        if (device.id === graphRangeID) {
+          return { ...device, graphRange: newGraphRange };
         }
         return device;
-    });
-    return {
-      ...state,
-      deviceList: updatedGraphRange
-    }
+      });
+      return {
+        ...state,
+        deviceList: updatedGraphRange,
+      };
 
     case "UPDATE_GRAPH":
       const { graphUpdateID, GraphData } = action.payload;
@@ -207,6 +209,18 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         deviceList: updatedGraph,
+      };
+
+    case "SET_TEXT_EDITOR_VARIABLE":
+      return {
+        ...state,
+        textEditorValue: action.payload,
+      };
+
+    case "SET_TEXT_EDITOR_SEND":
+      return {
+        ...state,
+        textEditorDeviceSelected: action.payload,
       };
 
     default:

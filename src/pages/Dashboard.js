@@ -16,9 +16,20 @@ const Dashboard = memo(function Dashboard() {
   const xx = 110;
   const yy = 15;
 
-  var displayMatrix = ["1:", "2:", "3:", "4:", "5:", "6:", "7:", "8:", "9:" , "10:"]
+  var displayMatrix = [
+    "1:",
+    "2:",
+    "3:",
+    "4:",
+    "5:",
+    "6:",
+    "7:",
+    "8:",
+    "9:",
+    "10:",
+  ];
 
-  const arrayOfZeros = new Array(120).fill(0)
+  const arrayOfZeros = new Array(120).fill(0);
 
   // template for a new device
   const newDevice = {
@@ -39,7 +50,7 @@ const Dashboard = memo(function Dashboard() {
     v2: arrayOfZeros,
     v3: arrayOfZeros,
     v4: arrayOfZeros,
-    graphRange: 30,
+    graphRange: { id: 2, name: "30" },
     xx: xx,
     yy: yy,
   };

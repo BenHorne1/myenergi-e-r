@@ -10,7 +10,7 @@ class Graph extends PureComponent {
     this.state = {
       options: {
         chart: {
-          id: "realtime",
+          id: `realtime${this.props.id}`,
           background: "#f4f4f4",
           foreColor: "#333",
           type: "bar",
@@ -78,22 +78,22 @@ class Graph extends PureComponent {
 
     window.setInterval(() => {
       //console.log("v1", this.props.deviceList[this.props.id - 1].v1);
-      ApexCharts.exec("realtime", "updateSeries", [
+      ApexCharts.exec(`realtime${this.props.id}`, "updateSeries", [
         {
           name: "series-0",
-          data: this.props.deviceList[this.props.id - 1].v1.slice(this.props.deviceList[this.props.id - 1].v1.length - 60),
+          data: this.props.deviceList[this.props.id - 1].v1.slice(this.props.deviceList[this.props.id - 1].v1.length - parseInt(this.props.deviceList[this.props.id-1].graphRange.name)),
         },
         {
           name: "series-1",
-          data: this.props.deviceList[this.props.id - 1].v2.slice(this.props.deviceList[this.props.id - 1].v2.length - 60),
+          data: this.props.deviceList[this.props.id - 1].v2.slice(this.props.deviceList[this.props.id - 1].v2.length - parseInt(this.props.deviceList[this.props.id-1].graphRange.name)),
         },
         {
           name: "series-2",
-          data: this.props.deviceList[this.props.id - 1].v3.slice(this.props.deviceList[this.props.id - 1].v3.length - 60),
+          data: this.props.deviceList[this.props.id - 1].v3.slice(this.props.deviceList[this.props.id - 1].v3.length - parseInt(this.props.deviceList[this.props.id-1].graphRange.name)),
         },
         {
           name: "series-3",
-          data: this.props.deviceList[this.props.id - 1].v4.slice(this.props.deviceList[this.props.id - 1].v4.length - 60),
+          data: this.props.deviceList[this.props.id - 1].v4.slice(this.props.deviceList[this.props.id - 1].v4.length - parseInt(this.props.deviceList[this.props.id-1].graphRange.name)),
         },
       ]);
     }, 1000);

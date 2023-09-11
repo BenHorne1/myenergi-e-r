@@ -103,3 +103,13 @@ export const updateGraph = (graphUpdateID, GraphData) => ({
   type: "UPDATE_GRAPH",
   payload: { graphUpdateID, GraphData },
 });
+
+export const setTextEditorValue = (value) => ({
+  type: "SET_TEXT_EDITOR_VARIABLE",
+  payload: value,
+});
+
+export const setTextEditorSend = (sendDeviceSelected) => ({
+  type: "SET_TEXT_EDITOR_SEND",
+  payload: sendDeviceSelected,
+});

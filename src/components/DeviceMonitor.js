@@ -70,46 +70,55 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
       dispatch(updateDeviceName(id, UDP.msg.DeviceName));
 
       // update terminal
-      let newTerminalOutput =
-        thisDevice.terminal + timeStr + " $ " + UDP.msg.Terminal + "\n";
-      dispatch(updateTerminal(id, newTerminalOutput));
+      if (UDP.msg.Terminal) {
+        let newTerminalOutput =
+          thisDevice.terminal + timeStr + " $ " + UDP.msg.Terminal + "\n";
+        dispatch(updateTerminal(id, newTerminalOutput));
+      }
 
       // update log
-      let newLogOutput = thisDevice.log + timeStr + " >> " + UDP.msg.Log + "\n";
-      dispatch(updateLog(id, newLogOutput));
+      if (UDP.msg.Log) {
+        let newLogOutput =
+          thisDevice.log + timeStr + " >> " + UDP.msg.Log + "\n";
+        dispatch(updateLog(id, newLogOutput));
 
-      // update log csv
-      console.log("sending to csv");
-      ipcRenderer.postMessage("csv:logData", {
-        logData: UDP.msg.Log,
-        id: id,
-        serial: UDP.msg.SerialID,
-      });
+        // update log csv
+        console.log("sending to csv");
+        ipcRenderer.postMessage("csv:logData", {
+          logData: UDP.msg.Log,
+          id: id,
+          serial: UDP.msg.SerialID,
+        });
+      }
 
       // update UDL
+      if (UDP.msg.UDL) {
+        try {
+          disElem = document.querySelector(`#UDL${id}`);
 
-      disElem = document.querySelector(`#UDL${id}`);
+          let newUDL = "";
 
-      let newUDL = "";
-
-      for (let i = 0; i < thisDevice.UDL.length; i++) {
-        if (i + 1 === UDP.msg.UDL.y) {
-          thisDevice.UDL[i] = i + 1 + ": " + UDP.msg.UDL.text;
-        }
-        newUDL += thisDevice.UDL[i] + `\n`;
-        console.log(newUDL);
+          for (let i = 0; i < thisDevice.UDL.length; i++) {
+            if (i + 1 === UDP.msg.UDL.y) {
+              thisDevice.UDL[i] = i + 1 + ": " + UDP.msg.UDL.text;
+            }
+            newUDL += thisDevice.UDL[i] + `\n`;
+          }
+          disElem.innerHTML = newUDL;
+        } catch {}
       }
-      disElem.innerHTML = newUDL;
 
       // update Graph
-      dispatch(updateGraph(id, UDP.msg.Data));
+      if (UDP.msg.Data) {
+        dispatch(updateGraph(id, UDP.msg.Data));
 
-      // update graph CSV
-      ipcRenderer.postMessage("csv:graphData", {
-        graphData: UDP.msg.Data,
-        id: id,
-        serial: UDP.msg.SerialID,
-      });
+        // update graph CSV
+        ipcRenderer.postMessage("csv:graphData", {
+          graphData: UDP.msg.Data,
+          id: id,
+          serial: UDP.msg.SerialID,
+        });
+      }
 
       // return () => (thisDevice = null), (id = null);
     } else {

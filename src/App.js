@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
-import SendJSON from "./pages/SendJSON";
+import SendJSON from "./pages/SendJSON/SendJSON";
 import SideBar from "./components/SideBar";
 
 function App() {
