@@ -185,4 +185,5 @@ ipcMain.on("rightClicked", (e, Data) => {
 
 ipcMain.on("UDP:SENDJSON", (e, Data) => {
   console.log("UDPSEND", Data);
+  socket.send(Data.msg, 0, Data.msg.length, Data.port, Data.IPAddress)
 });

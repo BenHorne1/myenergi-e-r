@@ -14,12 +14,12 @@ import {
   updatePort,
   updateSerial,
   updateTerminal,
-} from "../redux/action";
-import ToggleCheckbox from "./ToggleCheckbox";
-import Log from "./widgets/Log";
-import Terminal from "./widgets/Terminal";
-import UDL from "./widgets/UDL";
-import GraphWindow from "./widgets/Graph/GraphWindow";
+} from "../../../redux/action";
+import ToggleCheckbox from "../../../components/ToggleCheckbox";
+import Log from "./Widgets/Log";
+import Terminal from "./Widgets/Terminal";
+import UDL from "./Widgets/UDL";
+import GraphWindow from "./Widgets/Graph/GraphWindow";
 
 let disElem;
 

@@ -4,7 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { useDispatch, useSelector } from "react-redux";
-import { updateGraphRange } from "../../../redux/action";
+import { updateGraphRange } from "../../../../../redux/action";
 
 const ranges = [
   {

@@ -5,7 +5,7 @@ import {
   removeDevice,
   updateLog,
   updateTerminal,
-} from "../../redux/action";
+} from "../../../../redux/action";
 
 const Terminal = ({ id, thisDevice }) => {
   const dispatch = useDispatch();

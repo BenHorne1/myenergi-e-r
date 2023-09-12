@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import Dashboard from "./pages/Dashboard";
-import Settings from "./pages/Settings";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Settings from "./pages/Settings/Settings";
 import SendJSON from "./pages/SendJSON/SendJSON";
 import SideBar from "./components/SideBar";
 

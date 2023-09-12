@@ -1,8 +1,8 @@
 import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { addDevice } from "../redux/action";
+import { addDevice } from "../../redux/action";
 import { connect } from "react-redux";
-import DeviceMonitor from "../components/DeviceMonitor";
+import DeviceMonitor from "./Components/DeviceMonitor";
 import { memo } from "react";
 
 //const Dashboard = ({ deviceList }) => {
