@@ -113,3 +113,10 @@ export const setTextEditorSend = (sendDeviceSelected) => ({
   type: "SET_TEXT_EDITOR_SEND",
   payload: sendDeviceSelected,
 });
+
+// settings
+
+export const setConfig = (key, value) => ({
+  type: "SET_CONFIG",
+  payload: {key, value},
+});

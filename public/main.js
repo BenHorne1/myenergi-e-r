@@ -5,7 +5,24 @@ const path = require("path");
 const dgram = require("dgram");
 const socket = dgram.createSocket("udp4");
 
-let mainWindow;
+let mainWindow, UDPPort;
+
+let saveLocation;
+
+// load config
+
+ipcMain.on("CONFIG_STARTUP", (e, data) => {
+  console.log("reading config..." ,data);
+  UDPPort = data.UDPPort;
+  saveLocation = data.SaveLocation
+  console.log("UDPPOrt", saveLocation);
+
+  // open UDP PORT
+  try {
+    socket.bind(parseInt(UDPPort));
+    console.log("listening on port", UDPPort);
+  } catch {}
+});
 
 // get date of program openning
 function formatDateToYYYYMMDD(date) {
@@ -20,8 +37,6 @@ const currentDate = new Date();
 const formattedDate = formatDateToYYYYMMDD(currentDate);
 
 const isDev = process.env.NODE_ENV !== "production";
-
-const UDLPort = 801;
 
 function createWindow() {
   // Create the browser window.
@@ -78,11 +93,6 @@ app.on("activate", () => {
 
 // UDP
 
-try {
-  socket.bind(parseInt(UDLPort));
-  console.log("listening on port", UDLPort);
-} catch {}
-
 socket.on("message", (msg, rinfo) => {
   //console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
   let JSONRecieved = JSON.parse(msg);
@@ -130,7 +140,7 @@ ipcMain.on("csv:logData", (e, data) => {
   const timeStr = time.toLocaleTimeString();
 
   let logFileName = formattedDate + data.serial + "log.csv";
-  let saveLocation = "C:\\Users\\benho\\OneDrive\\Documents\\myenergi\\CSV";
+
 
   console.log(logFileName);
   appendToCSV(
@@ -146,7 +156,6 @@ ipcMain.on("csv:graphData", (e, data) => {
   const timeStr = time.toLocaleTimeString();
 
   let logFileName = formattedDate + data.serial + "GraphData.csv";
-  let saveLocation = "C:\\Users\\benho\\OneDrive\\Documents\\myenergi\\CSV";
 
   console.log(logFileName);
   appendToCSV(
@@ -185,5 +194,48 @@ ipcMain.on("rightClicked", (e, Data) => {
 
 ipcMain.on("UDP:SENDJSON", (e, Data) => {
   console.log("UDPSEND", Data);
-  socket.send(Data.msg, 0, Data.msg.length, Data.port, Data.IPAddress)
+  socket.send(Data.msg, 0, Data.msg.length, Data.port, Data.IPAddress);
 });
+
+// Update config.json
+
+// UPDATING JSON CAUSES APP TO RESTART/RECOMPILE
+
+ipcMain.on("SAVE_CONFIG", (e, data) => {
+  console.log("saving config");
+  //Update Config file
+
+  objArray = {
+    config: {
+      UDPPort: data.UDPPort,
+      SaveLocation: data.SaveLocation
+    },
+  };
+
+  console.log(objArray);
+  const uri = "src\\config.json";
+
+  const jsonString = [JSON.stringify(objArray, null, 2)];
+
+  const writeFile = (uri, data) =>
+    new Promise((resolve, reject) => {
+      fs.writeFile(uri, data, (err) => {
+        if (err) {
+          return reject(`Error writing file: ${uri} --> ${err}`);
+        }
+        resolve(`Successfully wrote file: ${uri} ---> with data ${data}`);
+      });
+    });
+
+  const asyncWriteFileMap = async (uri, seed) => {
+    const promises = seed.map(async (data) => {
+      await writeFile(uri, data)
+        .then((res) => console.log(res))
+        .catch((e) => console.log(e));
+    });
+    const result = await Promise.all(promises);
+  };
+  asyncWriteFileMap(uri, jsonString);
+});
+
+// Update CSV save location

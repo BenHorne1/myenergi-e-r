@@ -1,8 +1,23 @@
+// reducers.js
+
+import Data from "../config.json";
+
+console.log("config", Data.config.SaveLocation);
+
 const initialState = {
+  config: {
+    UDPPort: Data.config.UDPPort,
+    SaveLocation: Data.config.SaveLocation,
+  },
   textEditorValue: "Send JSON or other text files from here",
   textEditorDeviceSelected: { id: 0, name: "Select Device", serial: "" },
   deviceList: [],
 };
+
+ipcRenderer.send("CONFIG_STARTUP", {
+  UDPPort: Data.config.UDPPort,
+  SaveLocation: Data.config.SaveLocation,
+})
 
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -221,6 +236,16 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         textEditorDeviceSelected: action.payload,
+      };
+
+    // settings
+    case "SET_CONFIG":
+      return {
+        ...state,
+        config: {
+          ...state.config,
+          [action.payload.key]: action.payload.value,
+        },
       };
 
     default:
