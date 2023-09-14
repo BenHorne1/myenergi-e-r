@@ -180,6 +180,19 @@ const rootReducer = (state = initialState, action) => {
         deviceList: updatedUDLToggle,
       };
 
+    case "UPDATE_UDL":
+      const { UDLUpdateID, newUDLValue } = action.payload;
+      const updatedUDL = state.deviceList.map((device) => { 
+        if (device.id === UDLUpdateID) {
+          return { ...device, UDL: newUDLValue};
+        }
+        return device
+      })
+      return {
+        ...state,
+        deviceList: updatedUDL
+      }
+
     case "TOGGLE_GRAPH":
       const { graphID, newGraphState } = action.payload;
       const updatedGraphToggle = state.deviceList.map((device) => {

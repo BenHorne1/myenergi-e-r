@@ -85,6 +85,13 @@ export const toggleUDL = (UDLId, newUDLState) => {
   };
 };
 
+// export const updateUDL = (UDLUpdateID, newUDLValue) => {
+//   return {
+//     type: "UPDATE_UDL",
+//     payload: { UDLUpdateID, newUDLValue },
+//   };
+// };
+
 export const toggleGraph = (graphID, newGraphState) => {
   return {
     type: "TOGGLE_GRAPH",
@@ -118,5 +125,5 @@ export const setTextEditorSend = (sendDeviceSelected) => ({
 
 export const setConfig = (key, value) => ({
   type: "SET_CONFIG",
-  payload: {key, value},
+  payload: { key, value },
 });

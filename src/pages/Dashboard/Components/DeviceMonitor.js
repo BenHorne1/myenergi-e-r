@@ -14,6 +14,7 @@ import {
   updatePort,
   updateSerial,
   updateTerminal,
+  updateUDL,
 } from "../../../redux/action";
 import ToggleCheckbox from "../../../components/ToggleCheckbox";
 import Log from "./Widgets/Log";
@@ -94,19 +95,21 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
       // update UDL
       if (UDP.msg.UDL) {
         try {
-          disElem = document.querySelector(`#UDL${id}`);
+          //disElem = document.querySelector(`#UDL${id}`);
 
           let newUDL = "";
 
           for (let i = 0; i < thisDevice.UDL.length; i++) {
             if (i + 1 === UDP.msg.UDL.y) {
-              thisDevice.UDL[i] = i + 1 + ": " + UDP.msg.UDL.text;
+              thisDevice.UDL[i] = i + 1 + ": " + UDP.msg.UDL.text + `\n`;
             }
             newUDL += thisDevice.UDL[i] + `\n`;
           }
-          disElem.innerHTML = newUDL;
+          //disElem.innerHTML = newUDL;
         } catch {}
+       // dispatch(updateUDL(id, newUDL));
       }
+
 
       // update Graph
       if (UDP.msg.Data) {
