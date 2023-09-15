@@ -21,6 +21,7 @@ import Log from "./Widgets/Log";
 import Terminal from "./Widgets/Terminal";
 import UDL from "./Widgets/UDL";
 import GraphWindow from "./Widgets/Graph/GraphWindow";
+import SerialMode from "../SerialMode";
 
 let disElem;
 
@@ -107,9 +108,8 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
           }
           //disElem.innerHTML = newUDL;
         } catch {}
-       // dispatch(updateUDL(id, newUDL));
+        // dispatch(updateUDL(id, newUDL));
       }
-
 
       // update Graph
       if (UDP.msg.Data) {
@@ -146,14 +146,16 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
           onClick={toggler}
         />
         Serial &ensp;
-        <input
-          className=" mx-2 mt-1 shadow-inner bg-zinc-500 appearance-none border-2 border-zinc-500 rounded w-50 py-1 px-4 text-white leading-tight focus:outline-none focus:bg-zinc-500 focus:border-green-400"
-          defaultValue={thisDevice.serial}
-          onChange={(e) => {
-            dispatch(updateSerial(id, e.target.value));
-            thisDevice.serial = e.target.value;
-          }}
-        />
+        {toggle ? (
+          <input
+            className=" mx-2 mt-1 shadow-inner bg-zinc-500 appearance-none border-2 border-zinc-500 rounded w-50 py-1 px-4 text-white leading-tight focus:outline-none focus:bg-zinc-500 focus:border-green-400"
+            defaultValue={thisDevice.serial}
+            onChange={(e) => {
+              dispatch(updateSerial(id, e.target.value));
+              thisDevice.serial = e.target.value;
+            }}
+          />
+        ) : null}
         Device Name: {thisDevice.name} &ensp;
         {toggle ? (
           // UDP
@@ -162,7 +164,10 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
           </>
         ) : (
           // Serial
-          <>Serial </>
+          <>
+            Serial
+            <SerialMode />
+          </>
         )}
         <br /> <br />
         <div className=" text-white">

@@ -1,26 +1,45 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, ipcRenderer } = require("electron");
 const installExtension = require("electron-devtools-installer");
 const fs = require("fs");
 const path = require("path");
 const dgram = require("dgram");
 const socket = dgram.createSocket("udp4");
+const os = require("os");
 
 let mainWindow, UDPPort;
-
 let saveLocation;
+let address = "192.168.0.59";
+
+function getIPAddress() {
+  const interfaces = os.networkInterfaces();
+  for (const key in interfaces) {
+    for (const iface of interfaces[key]) {
+      if (iface.family === "IPv4" && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return "127.0.0.1";
+}
 
 // load config
 
 ipcMain.on("CONFIG_STARTUP", (e, data) => {
-  console.log("reading config..." ,data);
+  console.log("reading config...", data);
   UDPPort = data.UDPPort;
-  saveLocation = data.SaveLocation
+  saveLocation = data.SaveLocation;
   console.log("UDPPOrt", saveLocation);
 
   // open UDP PORT
   try {
-    socket.bind(parseInt(UDPPort));
+    //socket.bind(parseInt(UDPPort));
+    socket.bind(parseInt(UDPPort), getIPAddress());
     console.log("listening on port", UDPPort);
+    console.log("getting IP address !!!!!!", getIPAddress());
+    mainWindow.webContents.send("IPADDRESS", {
+      IP: getIPAddress(),
+      Port: UDPPort
+    });
   } catch {}
 });
 
@@ -41,6 +60,7 @@ const isDev = process.env.NODE_ENV !== "production";
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    autoHideMenuBar: true,
     title: "MyEnergi",
     width: isDev ? 1300 : 800,
     height: 600,
@@ -141,7 +161,6 @@ ipcMain.on("csv:logData", (e, data) => {
 
   let logFileName = formattedDate + data.serial + "log.csv";
 
-
   console.log(logFileName);
   appendToCSV(
     saveLocation + "\\" + logFileName,
@@ -208,7 +227,7 @@ ipcMain.on("SAVE_CONFIG", (e, data) => {
   objArray = {
     config: {
       UDPPort: data.UDPPort,
-      SaveLocation: data.SaveLocation
+      SaveLocation: data.SaveLocation,
     },
   };
 

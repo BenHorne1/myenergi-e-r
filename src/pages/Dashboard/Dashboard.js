@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { addDevice } from "../../redux/action";
 import { connect } from "react-redux";
 import DeviceMonitor from "./Components/DeviceMonitor";
-import { memo } from "react";
+import { memo, useEffect } from "react";
+
+let localIP, localPort;
 
 //const Dashboard = ({ deviceList }) => {
 const Dashboard = memo(function Dashboard() {
@@ -59,6 +61,13 @@ const Dashboard = memo(function Dashboard() {
     console.log("adding a new device");
     dispatch(addDevice([...deviceList, newDevice]));
   };
+  useEffect(() => {
+    ipcRenderer.on("IPADDRESS", (data) => {
+      console.log(data);
+      localIP = data.IP;
+      localPort = data.Port;
+    });
+  });
 
   return (
     <div className="ml-16 min-h-screen min-w-full bg-zinc-700">
@@ -66,6 +75,9 @@ const Dashboard = memo(function Dashboard() {
         <h1 className="mx-2 text-white bg-zinc-800 font-bold shadow-md">
           Dashboard
         </h1>
+      </div>
+      <div className="ml-2 text-white font-bold">
+        IP Address: {localIP}:{localPort}
       </div>
       {deviceList.map((device, index) => (
         <div key={device.id}>
