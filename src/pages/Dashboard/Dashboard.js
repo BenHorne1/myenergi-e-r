@@ -62,7 +62,7 @@ const Dashboard = memo(function Dashboard() {
     dispatch(addDevice([...deviceList, newDevice]));
   };
   useEffect(() => {
-    ipcRenderer.on("IPADDRESS", (data) => {
+    window.indexBridge.on("IPADDRESS", (data) => {
       console.log(data);
       localIP = data.IP;
       localPort = data.Port;

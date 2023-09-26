@@ -20,7 +20,7 @@ contextBridge.exposeInMainWorld('os', {
     join: (...args) => path.join(...args)
   })
 
-  contextBridge.exposeInMainWorld('ipcRenderer', {
+  let indexBridge = {
     send: (channel, data) => ipcRenderer.send(channel, data),
     postMessage: (channel, data) => ipcRenderer.postMessage(channel, data),
     on: (channel, func) => ipcRenderer.on(channel, (event, ...args) => func(...args)),
@@ -28,5 +28,6 @@ contextBridge.exposeInMainWorld('os', {
     removeListener: (channel, listener) => {
       ipcRenderer.removeListener(channel, listener);
     },
-  })
+  }
 
+  contextBridge.exposeInMainWorld("indexBridge", indexBridge);

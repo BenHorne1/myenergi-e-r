@@ -7,12 +7,12 @@ export default function Settings() {
   let config = useSelector((state) => state.config);
 
   function Save() {
-    ipcRenderer.send("SAVE_CONFIG", {
+    window.indexBridge.send("SAVE_CONFIG", {
       UDPPort: config.UDPPort,
       SaveLocation: config.SaveLocation,
     });
 
-    ipcRenderer.send("UDP:SAVELOCATION", {
+    window.indexBridge.send("UDP:SAVELOCATION", {
       
     })
   }

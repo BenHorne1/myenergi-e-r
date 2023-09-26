@@ -1,0 +1,10 @@
+appId: com.example.myapp
+productName: MyElectronReactApp
+directories:
+  output: ./dist
+files:
+  - build/
+asar: true
+nsis:
+  oneClick: false
+  perMachine: true

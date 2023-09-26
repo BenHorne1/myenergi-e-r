@@ -56,7 +56,7 @@ const Terminal = ({ id, thisDevice }) => {
                 break;
             }
             // send to electron msg to send to device
-            ipcRenderer.send("UDP:send", {
+            window.indexBridge.send("UDP:send", {
               msgToSend: input,
               port: thisDevice.port,
               IPaddress: thisDevice.IPAddress,

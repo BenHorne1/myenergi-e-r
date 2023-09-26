@@ -14,7 +14,7 @@ const initialState = {
   deviceList: [],
 };
 
-ipcRenderer.send("CONFIG_STARTUP", {
+window.indexBridge.send("CONFIG_STARTUP", {
   UDPPort: Data.config.UDPPort,
   SaveLocation: Data.config.SaveLocation,
 })

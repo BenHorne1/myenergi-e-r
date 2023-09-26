@@ -13,27 +13,27 @@ const UDL = ({ id, thisDevice }) => {
   console.log(thisDevice.UDL)
 
   const minClicked = () => {
-    ipcRenderer.send("minClicked", {
+    window.indexBridge.send("minClicked", {
       port: thisDevice.port,
       IPAddress: thisDevice.IPAddress,
     });
   };
   const plusClicked = () => {
-    ipcRenderer.send("plusClicked", {
+    window.indexBridge.send("plusClicked", {
       port: thisDevice.port,
       IPAddress: thisDevice.IPAddress,
     });
   };
 
   const leftClicked = () => {
-    ipcRenderer.send("leftClicked", {
+    window.indexBridge.send("leftClicked", {
       port: thisDevice.port,
       IPAddress: thisDevice.IPAddress,
     });
   };
 
   const rightClicked = () => {
-    ipcRenderer.send("rightClicked", {
+    window.indexBridge.send("rightClicked", {
       port: thisDevice.port,
       IPAddress: thisDevice.IPAddress,
     });

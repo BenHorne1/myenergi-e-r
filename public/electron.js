@@ -1,10 +1,11 @@
 const { app, BrowserWindow, ipcMain, ipcRenderer } = require("electron");
-const installExtension = require("electron-devtools-installer");
+//const installExtension = require("electron-devtools-installer");
 const fs = require("fs");
 const path = require("path");
 const dgram = require("dgram");
 const socket = dgram.createSocket("udp4");
 const os = require("os");
+const isDev = require('electron-is-dev')
 
 let mainWindow, UDPPort;
 let saveLocation;
@@ -38,7 +39,7 @@ ipcMain.on("CONFIG_STARTUP", (e, data) => {
     console.log("getting IP address !!!!!!", getIPAddress());
     mainWindow.webContents.send("IPADDRESS", {
       IP: getIPAddress(),
-      Port: UDPPort
+      Port: UDPPort,
     });
   } catch {}
 });
@@ -55,14 +56,14 @@ function formatDateToYYYYMMDD(date) {
 const currentDate = new Date();
 const formattedDate = formatDateToYYYYMMDD(currentDate);
 
-const isDev = process.env.NODE_ENV !== "production";
+const isDevMode = process.env.NODE_ENV !== "production";
 
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     autoHideMenuBar: true,
     title: "MyEnergi",
-    width: isDev ? 1300 : 800,
+    width: isDevMode ? 1300 : 800,
     height: 600,
     webPreferences: {
       nodeIntegration: true,
@@ -72,14 +73,56 @@ function createWindow() {
     },
   });
 
-  //load the index.html from a url
-  mainWindow.loadURL("http://localhost:3000");
+  // Serial Port
 
-  // Install Redux DevTools Extension
-  installExtension
-    .default(installExtension.REDUX_DEVTOOLS)
-    .then((name) => console.log(`Added Extension: ${name}`))
-    .catch((err) => console.log("An error occurred: ", err));
+  mainWindow.webContents.session.on(
+    "select-serial-port",
+    (event, portList, webContents, callback) => {
+      console.log("SELECT-SERIAL-PORT FIRED WITH", portList);
+
+      mainWindow.webContents.send("port:list", portList);
+      //Display some type of dialog so that the user can pick a port
+      // dialog.showMessageBoxSync({
+
+      // });
+      // event.preventDefault();
+
+      let selectedPort = portList.find((device) => {
+        // Automatically pick a specific device instead of prompting user
+        //return device.vendorId == 0x2341 && device.productId == 0x0043;
+
+        // Automatically return the first device
+        return true;
+      });
+      if (!selectedPort) {
+        callback("");
+      } else {
+        callback(selectedPort.portId);
+      }
+    }
+  );
+
+  mainWindow.webContents.session.on("serial-port-added", (event, port) => {
+    console.log("serial-port-added FIRED WITH", port);
+    event.preventDefault();
+
+    //mainWindow.webContents.send()
+  });
+
+  mainWindow.webContents.session.on("serial-port-removed", (event, port) => {
+    console.log("serial-port-removed FIRED WITH", port);
+    event.preventDefault();
+  });
+
+  mainWindow.webContents.session.on("select-serial-port-cancelled", () => {
+    console.log("select-serial-port-cancelled FIRED.");
+  });
+
+  //load the index.html from a url
+  //mainWindow.loadURL("http://localhost:3000");
+  if (isDev) {
+    mainWindow.loadURL("http://localhost:3000")
+  }
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
@@ -89,6 +132,12 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(createWindow);
+
+// Install Redux DevTools Extension
+// installExtension
+//   .default(installExtension.REDUX_DEVTOOLS)
+//   .then((name) => console.log(`Added Extension: ${name}`))
+//   .catch((err) => console.log("An error occurred: ", err));
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

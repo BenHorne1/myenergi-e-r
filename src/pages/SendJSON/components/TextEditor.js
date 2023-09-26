@@ -27,7 +27,7 @@ const TextEditor = () => {
   };
 
   const Send = () => {
-    ipcRenderer.send("UDP:SENDJSON", {
+    window.indexBridge.send("UDP:SENDJSON", {
       id: textEditorDeviceSelected.id,
       port: deviceList[textEditorDeviceSelected.id-1].port ,
       address: deviceList[textEditorDeviceSelected.id-1].IPAddress,

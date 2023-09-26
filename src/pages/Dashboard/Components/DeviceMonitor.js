@@ -22,6 +22,7 @@ import Terminal from "./Widgets/Terminal";
 import UDL from "./Widgets/UDL";
 import GraphWindow from "./Widgets/Graph/GraphWindow";
 import SerialMode from "../SerialMode";
+import UDPMode from "../UDPMode";
 
 let disElem;
 
@@ -86,7 +87,7 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
 
         // update log csv
         console.log("sending to csv");
-        ipcRenderer.postMessage("csv:logData", {
+        window.indexBridge.postMessage("csv:logData", {
           logData: UDP.msg.Log,
           id: id,
           serial: UDP.msg.SerialID,
@@ -116,7 +117,7 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
         dispatch(updateGraph(id, UDP.msg.Data));
 
         // update graph CSV
-        ipcRenderer.postMessage("csv:graphData", {
+        window.indexBridge.postMessage("csv:graphData", {
           graphData: UDP.msg.Data,
           id: id,
           serial: UDP.msg.SerialID,
@@ -129,10 +130,10 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
     }
   };
   useEffect(() => {
-    ipcRenderer.once(`UDP:RECIEVED${thisDevice.serial}`, udpReceivedHandler);
+    window.indexBridge.once(`UDP:RECIEVED${thisDevice.serial}`, udpReceivedHandler);
 
     return () => {
-      ipcRenderer.removeListener("UDP:RECIEVED", udpReceivedHandler);
+      window.indexBridge.removeListener("UDP:RECIEVED", udpReceivedHandler);
     };
   }); // Empty dependency array means this effect runs only on component mount and unmount.
 
@@ -140,11 +141,11 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
     <>
       <div className="text-white min-w-[1315px] min-h-2 max-h-[400px]  m-2 py-2 px-6 max-w-sm bg-zinc-600 rounded-xl shadow-lg space-y-2 sm:py-4  sm:items-center sm:space-y-0 ">
         ID: {id} &ensp; UDP &ensp;
-        <Switch
+        {/* <Switch
           className="mx-2 bg-zinc-900"
           checked={thisDevice.connectionType}
           onClick={toggler}
-        />
+        /> */}
         Serial &ensp;
         {toggle ? (
           <input
@@ -161,12 +162,13 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
           // UDP
           <>
             Address: {thisDevice.IPAddress}:{thisDevice.port}
+            {/* <UDPMode id={id} thisDevice={thisDevice} /> */}
           </>
         ) : (
           // Serial
           <>
             Serial
-            <SerialMode />
+            {/* <SerialMode id={id} thisDevice={thisDevice}/> */}
           </>
         )}
         <br /> <br />
