@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Settings from "./pages/Settings/Settings";
@@ -9,7 +9,7 @@ import SideBar from "./components/SideBar";
 function App() {
   return (
     <div className="flex">
-      <BrowserRouter>
+      <HashRouter>
         <SideBar />
 
         <Routes>
@@ -17,7 +17,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/send" element={<SendJSON />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }
