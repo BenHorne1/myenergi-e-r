@@ -1,11 +1,11 @@
-const { app, BrowserWindow, ipcMain, ipcRenderer } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 //const installExtension = require("electron-devtools-installer");
 const fs = require("fs");
-const path = require("path");
+const path = require("node:path");
 const dgram = require("dgram");
 const socket = dgram.createSocket("udp4");
 const os = require("os");
-const isDev = require('electron-is-dev')
+const isDev = require("electron-is-dev");
 
 let mainWindow, UDPPort;
 let saveLocation;
@@ -59,17 +59,19 @@ const formattedDate = formatDateToYYYYMMDD(currentDate);
 const isDevMode = process.env.NODE_ENV !== "production";
 
 function createWindow() {
+  const preload = path.join(__dirname, "preload.js");
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     autoHideMenuBar: true,
-    title: "MyEnergi",
+    title: "myenergi",
     width: isDevMode ? 1300 : 800,
     height: 600,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,
       enableBlinkFeatures: "Serial",
-      preload: path.join(__dirname, "preload.js"),
+      preload,
     },
   });
 
@@ -120,13 +122,17 @@ function createWindow() {
 
   //load the index.html from a url
   //mainWindow.loadURL("http://localhost:3000");
-  if (isDev) {
-    mainWindow.loadURL("http://localhost:3000")
-  }
+  mainWindow.loadURL(
+    isDev
+      ? "http://localhost:3000"
+      : `file://${path.join(__dirname, "./index.html")}`
+  );
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 }
+
+console.log("When ready");
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -273,7 +279,7 @@ ipcMain.on("SAVE_CONFIG", (e, data) => {
   console.log("saving config");
   //Update Config file
 
-  objArray = {
+  const objArray = {
     config: {
       UDPPort: data.UDPPort,
       SaveLocation: data.SaveLocation,
@@ -281,7 +287,7 @@ ipcMain.on("SAVE_CONFIG", (e, data) => {
   };
 
   console.log(objArray);
-  const uri = "src\\config.json";
+  const uri = "src/config.json";
 
   const jsonString = [JSON.stringify(objArray, null, 2)];
 

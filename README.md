@@ -29,6 +29,14 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+### `npm run package`
+
+Builds the release binaries based on the contents of the `build` folder.
+
+### `npm run clean`
+
+Cleans the `build` and `dist`. Useful if you want to be sure you're working against a clean build.
+
 ### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can't go back!**
