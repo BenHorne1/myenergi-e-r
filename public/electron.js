@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 //const installExtension = require("electron-devtools-installer");
 const fs = require("fs");
 const path = require("node:path");
@@ -7,9 +7,16 @@ const socket = dgram.createSocket("udp4");
 const os = require("os");
 const isDev = require("electron-is-dev");
 
-let mainWindow, UDPPort;
+let mainWindow;
 let saveLocation;
-let address = "192.168.0.59";
+
+const configPath = getConfigFilePath();
+const congfigPreset = {
+  config: {
+    UDPPort: "8081",
+    SaveLocation: "savelocation",
+  },
+};
 
 function getIPAddress() {
   const interfaces = os.networkInterfaces();
@@ -23,26 +30,20 @@ function getIPAddress() {
   return "127.0.0.1";
 }
 
-// load config
+// open UDP Port
 
-ipcMain.on("CONFIG_STARTUP", (e, data) => {
-  console.log("reading config...", data);
-  UDPPort = data.UDPPort;
-  saveLocation = data.SaveLocation;
-  console.log("UDPPOrt", saveLocation);
-
-  // open UDP PORT
+function openPort(port) {
+  console.log("Port", port);
   try {
-    //socket.bind(parseInt(UDPPort));
-    socket.bind(parseInt(UDPPort), getIPAddress());
-    console.log("listening on port", UDPPort);
+    socket.bind(parseInt(port), getIPAddress());
+    console.log("listening on port", port);
     console.log("getting IP address !!!!!!", getIPAddress());
     mainWindow.webContents.send("IPADDRESS", {
       IP: getIPAddress(),
-      Port: UDPPort,
+      Port: port,
     });
   } catch {}
-});
+}
 
 // get date of program openning
 function formatDateToYYYYMMDD(date) {
@@ -57,6 +58,36 @@ const currentDate = new Date();
 const formattedDate = formatDateToYYYYMMDD(currentDate);
 
 const isDevMode = process.env.NODE_ENV !== "production";
+
+function createConfig() {
+  // check if config file is present
+
+  fs.access(configPath, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.error("Config does not exist");
+      console.log("creating config file");
+      try {
+        fs.writeFileSync(
+          configPath,
+          JSON.stringify(congfigPreset, null, 2),
+          "utf-8"
+        );
+
+        dialog.showMessageBox(mainWindow, {
+          type: "info",
+          message:
+            "Config initialised. Please set directory path to save CSV files to",
+          title: "Config initialised",
+          buttons: ["OK"],
+        });
+      } catch (error) {
+        console.error("Error creating config file: ", error);
+      }
+    } else {
+      console.log("Config Exists");
+    }
+  });
+}
 
 function createWindow() {
   const preload = path.join(__dirname, "preload.js");
@@ -132,12 +163,10 @@ function createWindow() {
   mainWindow.webContents.openDevTools();
 }
 
-console.log("When ready");
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(createWindow);
+app.whenReady().then(createConfig).then(createWindow);
 
 // Install Redux DevTools Extension
 // installExtension
@@ -273,43 +302,57 @@ ipcMain.on("UDP:SENDJSON", (e, Data) => {
 
 // Update config.json
 
-// UPDATING JSON CAUSES APP TO RESTART/RECOMPILE
+function getConfigFilePath() {
+  const userDataPath = app.getPath("userData");
+  return path.join(userDataPath, "config.json");
+}
+
+function saveConfig(config) {
+  const configPath = getConfigFilePath();
+  console.log("User data path", configPath);
+  config = { config };
+  saveLocation = config.config.SaveLocation
+  console.log("saving config", config);
+  //const configPath = path.join(__dirname, '../src/config.json');
+  try {
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), "utf-8");
+    console.log("Configuration file saved successfully.");
+  } catch (error) {
+    console.error("Error saving configuration file:", error);
+  }
+}
+
+function loadConfig() {
+  const configPath = getConfigFilePath();
+
+  try {
+    const data = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+    console.log(data.config.UDPPort);
+    openPort(data.config.UDPPort);
+    saveLocation = data.config.SaveLocation;
+    return data;
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      // Handle the case where the file doesn't exist (e.g., provide default config)
+      return {};
+    }
+    console.error("Error loading configuration file:", error);
+    return {};
+  }
+}
 
 ipcMain.on("SAVE_CONFIG", (e, data) => {
-  console.log("saving config");
-  //Update Config file
-
-  const objArray = {
-    config: {
-      UDPPort: data.UDPPort,
-      SaveLocation: data.SaveLocation,
-    },
-  };
-
-  console.log(objArray);
-  const uri = "src/config.json";
-
-  const jsonString = [JSON.stringify(objArray, null, 2)];
-
-  const writeFile = (uri, data) =>
-    new Promise((resolve, reject) => {
-      fs.writeFile(uri, data, (err) => {
-        if (err) {
-          return reject(`Error writing file: ${uri} --> ${err}`);
-        }
-        resolve(`Successfully wrote file: ${uri} ---> with data ${data}`);
-      });
-    });
-
-  const asyncWriteFileMap = async (uri, seed) => {
-    const promises = seed.map(async (data) => {
-      await writeFile(uri, data)
-        .then((res) => console.log(res))
-        .catch((e) => console.log(e));
-    });
-    const result = await Promise.all(promises);
-  };
-  asyncWriteFileMap(uri, jsonString);
+  saveConfig(data);
 });
 
-// Update CSV save location
+ipcMain.handle("loadConfig", () => {
+  try {
+    console.log("INVOKE!!!!!!!!!!");
+
+    const data = loadConfig();
+    console.log(data);
+    return data;
+  } catch (error) {
+    return error.message;
+  }
+});

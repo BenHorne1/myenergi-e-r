@@ -1,23 +1,15 @@
 // reducers.js
 
-import Data from "../config.json";
-
-console.log("config", Data.config.SaveLocation);
 
 const initialState = {
   config: {
-    UDPPort: Data.config.UDPPort,
-    SaveLocation: Data.config.SaveLocation,
+    UDPPort: "8081",
+    SaveLocation: "savelocation",
   },
   textEditorValue: "Send JSON or other text files from here",
   textEditorDeviceSelected: { id: 0, name: "Select Device", serial: "" },
   deviceList: [],
 };
-
-window.indexBridge.send("CONFIG_STARTUP", {
-  UDPPort: Data.config.UDPPort,
-  SaveLocation: Data.config.SaveLocation,
-})
 
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -182,16 +174,16 @@ const rootReducer = (state = initialState, action) => {
 
     case "UPDATE_UDL":
       const { UDLUpdateID, newUDLValue } = action.payload;
-      const updatedUDL = state.deviceList.map((device) => { 
+      const updatedUDL = state.deviceList.map((device) => {
         if (device.id === UDLUpdateID) {
-          return { ...device, UDL: newUDLValue};
+          return { ...device, UDL: newUDLValue };
         }
-        return device
-      })
+        return device;
+      });
       return {
         ...state,
-        deviceList: updatedUDL
-      }
+        deviceList: updatedUDL,
+      };
 
     case "TOGGLE_GRAPH":
       const { graphID, newGraphState } = action.payload;

@@ -26,9 +26,9 @@ let indexBridge = {
     ipcRenderer.on(channel, (event, ...args) => func(...args)),
   once: (channel, func) =>
     ipcRenderer.once(channel, (event, ...args) => func(...args)),
-  removeListener: (channel, listener) => {
-    ipcRenderer.removeListener(channel, listener);
-  },
+  removeListener: (channel, listener) =>
+    ipcRenderer.removeListener(channel, listener),
+  invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args),
 };
 
 contextBridge.exposeInMainWorld("indexBridge", indexBridge);

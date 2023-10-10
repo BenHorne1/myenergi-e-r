@@ -21,8 +21,7 @@ import Log from "./Widgets/Log";
 import Terminal from "./Widgets/Terminal";
 import UDL from "./Widgets/UDL";
 import GraphWindow from "./Widgets/Graph/GraphWindow";
-import SerialMode from "../SerialMode";
-import UDPMode from "../UDPMode";
+
 
 let disElem;
 
