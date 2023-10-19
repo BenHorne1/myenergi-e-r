@@ -28,6 +28,8 @@ let indexBridge = {
     ipcRenderer.once(channel, (event, ...args) => func(...args)),
   removeListener: (channel, listener) =>
     ipcRenderer.removeListener(channel, listener),
+  removeAllListeners: (channel) =>
+    ipcRenderer.removeAllListeners(channel),
   invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args),
 };
 

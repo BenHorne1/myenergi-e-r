@@ -85,7 +85,7 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
         dispatch(updateLog(id, newLogOutput));
 
         // update log csv
-        console.log("sending to csv");
+        console.log("sending to csv", UDP, id);
         window.indexBridge.postMessage("csv:logData", {
           logData: UDP.msg.Log,
           id: id,
@@ -132,9 +132,9 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
     window.indexBridge.once(`UDP:RECIEVED${thisDevice.serial}`, udpReceivedHandler);
 
     return () => {
-      window.indexBridge.removeListener("UDP:RECIEVED", udpReceivedHandler);
+      window.indexBridge.removeAllListeners(`UDP:RECIEVED${thisDevice.serial}`, udpReceivedHandler);
     };
-  }); // Empty dependency array means this effect runs only on component mount and unmount.
+  }); 
 
   return (
     <>

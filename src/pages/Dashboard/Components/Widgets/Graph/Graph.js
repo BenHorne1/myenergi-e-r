@@ -5,6 +5,9 @@ import { updateGraph } from "../../../../../redux/action";
 import { connect } from "react-redux";
 
 class Graph extends PureComponent {
+
+  graphWindowIterval = undefined;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -77,7 +80,7 @@ class Graph extends PureComponent {
   componentDidMount() {
     console.log("graph", this.props.deviceList[this.props.id - 1]);
 
-    window.setInterval(() => {
+    this.graphWindowIterval = window.setInterval(() => {
       //console.log("v1", this.props.deviceList[this.props.id - 1].v1);
       ApexCharts.exec(`realtime${this.props.id}`, "updateSeries", [
         {
@@ -110,6 +113,11 @@ class Graph extends PureComponent {
         },
       ]);
     }, 1000);
+
+  }
+
+  componentWillUnmount() {
+    window.clearInterval(this.graphWindowIterval)
   }
 
   dismiss() {
