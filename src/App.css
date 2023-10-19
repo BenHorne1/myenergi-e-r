@@ -35,15 +35,19 @@
     transition-all;
   }
 
-  
   .UDL-buttons {
-    @apply relative items-center justify-center text-center
+    @apply relative flex items-center justify-center
     h-12 w-12 mt-2 mb-2 mx-auto
-  bg-green-500 hover:text-zinc-800
+  bg-green-500 hover:bg-green-800 text-zinc-800 hover:text-green-500
     rounded-3xl hover:rounded-xl
     transition-all;
   }
+}
 
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 1em;
 }
 
 .monaco-editor .overflow-guard {
@@ -58,7 +62,6 @@
   width: 600px;
   overflow-y: scroll;
   overflow-x: auto;
-
 }
 
 .terminal::-webkit-scrollbar {
@@ -90,7 +93,6 @@
   width: 600px;
   overflow-y: scroll;
   overflow-x: auto;
-
 }
 
 .UDL::-webkit-scrollbar {
@@ -106,19 +108,17 @@
   border-radius: 100vw;
 }
 
-
-
-#check-box-1:checked ~ .check-1{
+#check-box-1:checked ~ .check-1 {
   @apply text-opacity-100;
-  animation: check-animation .5s 1;
+  animation: check-animation 0.5s 1;
 }
 
 @keyframes check-animation {
-  0%, 100%{
+  0%,
+  100% {
     @apply transform scale-100;
   }
-  50%{
-    @apply transform scale-150
+  50% {
+    @apply transform scale-150;
   }
 }
-

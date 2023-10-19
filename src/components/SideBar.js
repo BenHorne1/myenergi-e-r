@@ -1,7 +1,6 @@
 import { HiOutlineHome, HiOutlineCog } from "react-icons/hi";
-import { VscSymbolNamespace } from "react-icons/vsc"
+import { VscSymbolNamespace } from "react-icons/vsc";
 import { NavLink } from "react-router-dom";
-
 
 const SideBar = () => {
   return (
@@ -14,10 +13,10 @@ const SideBar = () => {
         <SideBarIconLink
           icon={<HiOutlineHome size="28" />}
           text="DashBoard"
-         // key="DashBoard"
+          // key="DashBoard"
           to="/"
         />
-                        <SideBarIconLink
+        <SideBarIconLink
           icon={<VscSymbolNamespace size="28" />}
           text="Send"
           //key="Settings"
@@ -29,13 +28,12 @@ const SideBar = () => {
           //key="Settings"
           to="/settings"
         />
-
       </nav>
     </div>
   );
 };
 
-const SideBarIcon = ({ icon, text = "tootip" }) => (
+const SideBarIcon = ({ icon, text = "tooltip" }) => (
   <div className="sidebar-icon group">
     {icon}
     <span className="sidebar-tooltip group-hover:scale-100">{text}</span>
@@ -45,11 +43,7 @@ const SideBarIcon = ({ icon, text = "tootip" }) => (
 const SideBarIconLink = ({ icon, text = "tootip", key, to }) => (
   <NavLink
     className={({ isActive }) => {
-      return (
-        (!isActive
-          ? "sidebar-icon group"
-          : "sidebar-icon-active group")
-      );
+      return !isActive ? "sidebar-icon group" : "sidebar-icon-active group";
     }}
     //key={key}
     to={to}

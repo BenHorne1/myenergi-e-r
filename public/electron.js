@@ -7,6 +7,8 @@ const socket = dgram.createSocket("udp4");
 const os = require("os");
 const isDev = require("electron-is-dev");
 
+const isDevMode = process.env.NODE_ENV !== "production";
+
 let mainWindow;
 let saveLocation;
 
@@ -57,7 +59,7 @@ function formatDateToYYYYMMDD(date) {
 const currentDate = new Date();
 const formattedDate = formatDateToYYYYMMDD(currentDate);
 
-const isDevMode = process.env.NODE_ENV !== "production";
+
 
 function createConfig() {
   // check if config file is present
@@ -211,13 +213,14 @@ socket.on("message", (msg, rinfo) => {
 // udp send
 ipcMain.on("UDP:send", (e, data) => {
   console.log("Sending UDP", data.msgToSend.length);
+  console.log(data)
   try {
     socket.send(
       data.msgToSend,
       0,
       data.msgToSend.length,
       data.port,
-      data.IPAddress
+      data.IPaddress
     );
   } catch {}
 });
@@ -297,7 +300,9 @@ ipcMain.on("rightClicked", (e, Data) => {
 
 ipcMain.on("UDP:SENDJSON", (e, Data) => {
   console.log("UDPSEND", Data);
-  socket.send(Data.msg, 0, Data.msg.length, Data.port, Data.IPAddress);
+  //console.log(Data.address, ":", Data.port);
+  socket.send(Data.msg, 0, Data.msg.length, Data.port, Data.address);
+  //socket.send(Data.msg, 0, Data.msg.length, 111, '192.168.0.140');
 });
 
 // Update config.json
@@ -311,7 +316,7 @@ function saveConfig(config) {
   const configPath = getConfigFilePath();
   console.log("User data path", configPath);
   config = { config };
-  saveLocation = config.config.SaveLocation
+  saveLocation = config.config.SaveLocation;
   console.log("saving config", config);
   //const configPath = path.join(__dirname, '../src/config.json');
   try {
