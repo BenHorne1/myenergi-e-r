@@ -1,4 +1,3 @@
-import { Switch } from "antd";
 import { useEffect, useState, memo } from "react";
 import { useDispatch } from "react-redux";
 import {
@@ -6,7 +5,6 @@ import {
   toggleLog,
   toggleTerminal,
   toggleUDL,
-  updateConnectionType,
   updateDeviceName,
   updateGraph,
   updateIPAddress,
@@ -14,7 +12,6 @@ import {
   updatePort,
   updateSerial,
   updateTerminal,
-  updateUDL,
 } from "../../../redux/action";
 import ToggleCheckbox from "../../../components/ToggleCheckbox";
 import Log from "./Widgets/Log";
@@ -22,8 +19,6 @@ import Terminal from "./Widgets/Terminal";
 import UDL from "./Widgets/UDL";
 import GraphWindow from "./Widgets/Graph/GraphWindow";
 
-
-let disElem;
 
 //const DeviceMonitor = ({ id, thisDevice }) => {
 const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
@@ -36,12 +31,6 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
 
   const time = new Date();
   const timeStr = time.toLocaleTimeString();
-
-  const toggler = () => {
-    toggle ? setToggle(false) : setToggle(true);
-    dispatch(updateConnectionType(id, toggle));
-    console.log("toggle", toggle);
-  };
 
   // handlers for widget toggles
   const handleTerminalToggle = (isChecked) => {
@@ -64,7 +53,7 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
     UDP.msg = JSON.parse(String.fromCharCode(...UDP.msg));
     console.log("packet received", UDP.msg);
 
-    if (UDP.msg.SerialID == thisDevice.serial) {
+    if (UDP.msg.SerialID === thisDevice.serial) {
       console.log("Matched Serial", id, thisDevice.serial);
       // update device info
       dispatch(updateIPAddress(id, UDP.IPAddress));
@@ -139,13 +128,7 @@ const DeviceMonitor = memo(function DeviceMonitor({ id, thisDevice }) {
   return (
     <>
       <div className="text-white min-w-[1315px] min-h-2 max-h-[400px]  m-2 py-2 px-6 max-w-sm bg-zinc-600 rounded-xl shadow-lg space-y-2 sm:py-4  sm:items-center sm:space-y-0 ">
-        ID: {id} &ensp; UDP &ensp;
-        {/* <Switch
-          className="mx-2 bg-zinc-900"
-          checked={thisDevice.connectionType}
-          onClick={toggler}
-        /> */}
-        Serial &ensp;
+        ID: {id} &ensp; 
         {toggle ? (
           <input
             className=" mx-2 mt-1 shadow-inner bg-zinc-500 appearance-none border-2 border-zinc-500 rounded w-50 py-1 px-4 text-white leading-tight focus:outline-none focus:bg-zinc-500 focus:border-green-400"

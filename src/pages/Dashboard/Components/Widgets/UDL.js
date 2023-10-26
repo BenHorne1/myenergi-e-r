@@ -1,12 +1,9 @@
 import {
   AiOutlinePlus,
   AiOutlineLine,
-  AiFillCaretDown,
-  AiFillCaretUp,
   AiFillCaretLeft,
   AiFillCaretRight,
 } from "react-icons/ai";
-import { useSelector } from "react-redux";
 
 const UDL = ({ id, thisDevice }) => {
   console.log(thisDevice.UDL);

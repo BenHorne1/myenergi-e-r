@@ -1,4 +1,4 @@
-import React, { Component, PureComponent } from "react";
+import React, { PureComponent } from "react";
 import Chart from "react-apexcharts";
 import ApexCharts from "apexcharts";
 import { updateGraph } from "../../../../../redux/action";
